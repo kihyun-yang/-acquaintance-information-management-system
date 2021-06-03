@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -38,12 +39,7 @@ public class Person {
     @ToString.Exclude
     private String phoneNumber;
 
-    private boolean block;
-
-    private String blockReason;
-
-    private LocalDate blockStartDate;
-
-    private LocalDate blockEndDate;
+    @OneToOne
+    private Block block;
 
 }
