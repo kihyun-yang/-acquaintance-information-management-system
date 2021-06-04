@@ -13,7 +13,7 @@ import javax.validation.Valid;
 @Entity
 public class Person {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
