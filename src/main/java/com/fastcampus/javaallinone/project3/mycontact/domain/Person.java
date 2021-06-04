@@ -1,9 +1,10 @@
 package com.fastcampus.javaallinone.project3.mycontact.domain;
 
+import com.fastcampus.javaallinone.project3.mycontact.domain.dto.Birthday;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import javax.validation.Valid;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,7 +30,9 @@ public class Person {
 
     private String address;
 
-    private LocalDate birthday;
+    @Valid
+    @Embedded
+    private Birthday birthday;
 
     private String job;
 
