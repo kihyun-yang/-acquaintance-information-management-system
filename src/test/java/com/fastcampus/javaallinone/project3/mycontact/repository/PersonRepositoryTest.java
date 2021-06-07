@@ -1,16 +1,16 @@
 package com.fastcampus.javaallinone.project3.mycontact.repository;
 
 import com.fastcampus.javaallinone.project3.mycontact.domain.Person;
-import com.fastcampus.javaallinone.project3.mycontact.domain.dto.Birthday;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@Transactional
 @SpringBootTest
 class PersonRepositoryTest {
 
@@ -46,27 +46,12 @@ class PersonRepositoryTest {
 
     @Test
     void findByBirthdayBetween() {
-        givenPerson("martin", 10, "A", LocalDate.of(1991, 8, 15));
-        givenPerson("david", 9, "B", LocalDate.of(1991, 7, 10));
-        givenPerson("denis", 8, "O", LocalDate.of(1993, 1, 5));
-        givenPerson("sophia", 7, "AB", LocalDate.of(1994, 6, 30));
-        givenPerson("benny", 6, "AB", LocalDate.of(1995, 8, 30));
-
 
         List<Person> result = personRepository.findByMonthOfBirthday(8);
 
-        result.forEach(System.out::println);
-    }
-
-    private void givenPerson(String name, int age, String bloodType) {
-        givenPerson(name, age, bloodType, null);
-    }
-
-    private void givenPerson(String name, int age, String bloodType, LocalDate birthday) {
-        Person person = new Person(name, age, bloodType);
-        person.setBirthday(new Birthday(birthday));
-
-        personRepository.save(person);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0).getName()).isEqualTo("martin");
+        assertThat(result.get(1).getName()).isEqualTo("sophia");
     }
 
 }
