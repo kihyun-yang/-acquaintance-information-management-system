@@ -24,8 +24,8 @@ public class PersonController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void postPerson(@RequestBody Person person) {
-        personService.put(person);
+    public void postPerson(@RequestBody PersonDto personDto) {
+        personService.put(personDto);
     }
 
     @PutMapping("/{id}")
