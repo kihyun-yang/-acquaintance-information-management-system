@@ -1,9 +1,13 @@
 package com.fastcampus.javaallinone.project3.mycontact.controller.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@AllArgsConstructor(staticName = "of")
+@NoArgsConstructor
 @Data
 public class PersonDto {
     private String name;
