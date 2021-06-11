@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Data
@@ -16,4 +17,10 @@ public class ErrorResponse {
         return new ErrorResponse(httpStatus.value(), message);
     }
 
+    public static ErrorResponse of(HttpStatus httpStatus, FieldError fieldError) {
+        if (fieldError == null) {
+            return new ErrorResponse(httpStatus.value(), "invalid params");
+        }
+        return new ErrorResponse(httpStatus.value(), fieldError.getDefaultMessage());
+    }
 }
