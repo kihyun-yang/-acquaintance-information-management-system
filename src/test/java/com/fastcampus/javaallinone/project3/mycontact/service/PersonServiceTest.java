@@ -18,8 +18,15 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+
+/**
+ * Mock test
+ * SpringBootTest 보다 더 빠르고 디테일 하게 테스트가 가능
+ * DB에 의존적이지 않고 service 본연의 단위 테스트가 가능 (spring context를 띄우지 않아도 테스트 가능)
+ * 로직이 많은 service layer는 mock test를 많이 활용함
+ *
+ */
 
 @ExtendWith(MockitoExtension.class)
 class PersonServiceTest {
@@ -66,7 +73,7 @@ class PersonServiceTest {
         personService.put(mockPersonDto());
 
         // mockito 에서 void return을 검증하는 방법
-        verify(personRepository, times(1)).save(any(Person.class));
+        verify(personRepository, times(1)).save(argThat(new IsPersonWillBeInserted()));
     }
 
     @Test
@@ -96,8 +103,61 @@ class PersonServiceTest {
         verify(personRepository, times(1)).save(argThat(new IsPersonWillBeUpdated()));
     }
 
+    @Test
+    void modifyByNameIfPersonNotFound() {
+        when(personRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> personService.modify(1L, "martin"));
+    }
+
+    @Test
+    void modifyByName() {
+        when(personRepository.findById(1L))
+                .thenReturn(Optional.of(new Person("martin")));
+
+        personService.modify(1L, "daniel");
+
+        verify(personRepository, times(1)).save(argThat(new IsNameWillBeUpdated()));
+    }
+
+    @Test
+    void deleteIfPersonNotFound() {
+        when(personRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> personService.delete(1L));
+    }
+
+    @Test
+    void delete() {
+        when(personRepository.findById(1L))
+                .thenReturn(Optional.of(new Person("martin")));
+
+        personService.delete(1L);
+
+        verify(personRepository, times(1)).save(argThat(new IsPersonWillBeDeleted()));
+    }
+
     private PersonDto mockPersonDto() {
         return PersonDto.of("martin", "programming", "판교", LocalDate.now(), "programmer", "010-1111-2222");
+    }
+
+    private static class IsPersonWillBeInserted implements ArgumentMatcher<Person> {
+
+        @Override
+        public boolean matches(Person person) {
+            return equals(person.getName(), "martin")
+                    && equals(person.getHobby(), "programming")
+                    && equals(person.getAddress(), "판교")
+                    && equals(person.getBirthday(), Birthday.of(LocalDate.now()))
+                    && equals(person.getJob(), "programmer")
+                    && equals(person.getPhoneNumber(), "010-1111-2222");
+        }
+
+        private boolean equals(Object actual, Object expected) {
+            return expected.equals(actual);
+        }
     }
 
     private static class IsPersonWillBeUpdated implements ArgumentMatcher<Person> {
@@ -114,6 +174,22 @@ class PersonServiceTest {
 
         private boolean equals(Object actual, Object expected) {
             return expected.equals(actual);
+        }
+    }
+
+    private static class IsNameWillBeUpdated implements ArgumentMatcher<Person> {
+
+        @Override
+        public boolean matches(Person person) {
+            return person.getName().equals("daniel");
+        }
+    }
+
+    private static class IsPersonWillBeDeleted implements ArgumentMatcher<Person> {
+
+        @Override
+        public boolean matches(Person person) {
+            return person.isDeleted();
         }
     }
 }
