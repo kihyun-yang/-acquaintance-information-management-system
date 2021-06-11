@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -73,5 +74,14 @@ public class PersonService {
         person.setDeleted(true);
 
         personRepository.save(person);
+    }
+
+    public List<Person> getBirthdayFriendsTodayOrTomorrow() {
+        LocalDate todayDate = LocalDate.now();
+        LocalDate tomorrowDate = todayDate.plusDays(1);
+
+        return personRepository.findBirthdayFriendsTodayOrTomorrow(
+                todayDate.getMonthValue(), todayDate.getDayOfMonth(),
+                tomorrowDate.getMonthValue(), tomorrowDate.getDayOfMonth());
     }
 }

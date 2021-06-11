@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RequestMapping(value = "/api/person")
@@ -50,6 +51,17 @@ public class PersonController {
     @DeleteMapping("/{id}")
     public void deletePerson(@PathVariable Long id) {
         personService.delete(id);
+    }
+
+    /**
+     *
+     * 과제. 오늘, 내일이 생일인 친구 목록을 반환하는 API 작성
+     *
+     */
+    @GetMapping("/birthday-friends")
+    public List<Person> getBirthdayFriendsTodayOrTomorrow() {
+
+        return personService.getBirthdayFriendsTodayOrTomorrow();
     }
 
 }
