@@ -3,6 +3,7 @@ package com.fastcampus.javaallinone.project3.mycontact.controller;
 import com.fastcampus.javaallinone.project3.mycontact.controller.dto.PersonDto;
 import com.fastcampus.javaallinone.project3.mycontact.domain.Person;
 import com.fastcampus.javaallinone.project3.mycontact.domain.dto.Birthday;
+import com.fastcampus.javaallinone.project3.mycontact.exception.handler.GlobalExceptionHandler;
 import com.fastcampus.javaallinone.project3.mycontact.repository.PersonRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDate;
 
@@ -33,21 +35,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PersonControllerTest {
 
     @Autowired
-    private PersonController personController;
-    @Autowired
     private PersonRepository personRepository;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private MappingJackson2HttpMessageConverter messageConverter;
+    private WebApplicationContext wac;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     void beforeEach() {
         mockMvc = MockMvcBuilders
-                .standaloneSetup(personController)
-                .setMessageConverters(messageConverter)
+                .webAppContextSetup(wac)
                 .alwaysDo(print())
                 .build();
     }
@@ -101,7 +100,7 @@ class PersonControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJsonString(dto)))
                 .andExpect(jsonPath("$.code").value(500))
-                .andExpect(jsonPath("$.message").value("알 수 없는 서버 오류가 발생했습니다"));
+                .andExpect(jsonPath("$.message").value("알 수 없는 서버 오류가 발생하였습니다"));
     }
 
     @Test
