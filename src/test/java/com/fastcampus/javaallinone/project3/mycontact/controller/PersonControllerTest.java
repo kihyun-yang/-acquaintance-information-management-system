@@ -3,7 +3,6 @@ package com.fastcampus.javaallinone.project3.mycontact.controller;
 import com.fastcampus.javaallinone.project3.mycontact.controller.dto.PersonDto;
 import com.fastcampus.javaallinone.project3.mycontact.domain.Person;
 import com.fastcampus.javaallinone.project3.mycontact.domain.dto.Birthday;
-import com.fastcampus.javaallinone.project3.mycontact.exception.handler.GlobalExceptionHandler;
 import com.fastcampus.javaallinone.project3.mycontact.repository.PersonRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -24,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -56,8 +53,8 @@ class PersonControllerTest {
     void getAll() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/person")
-                    .param("page", "1")
-                    .param("size","2"))
+                        .param("page", "1")
+                        .param("size","2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalPages").value(3))
                 .andExpect(jsonPath("$.totalElements").value(6))
@@ -90,8 +87,8 @@ class PersonControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/person")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(toJsonString(dto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJsonString(dto)))
                 .andExpect(status().isCreated());
 
         Person result = personRepository.findAll(Sort.by(Sort.Direction.DESC, "id")).get(0);
@@ -153,8 +150,8 @@ class PersonControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/api/person/1")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(toJsonString(dto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJsonString(dto)))
                 .andExpect(status().isOk());
 
         Person result = personRepository.findById(1L).get();
@@ -188,8 +185,8 @@ class PersonControllerTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/api/person/10")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(toJsonString(dto)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(toJsonString(dto)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.message").value("Person Entity가 존재하지 않습니다"));
